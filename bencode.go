@@ -40,12 +40,12 @@ func parseDictionary(reader *bufio.Reader) (map[string]interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		reader.UnreadRune()
 
 		if r == 'e' {
-			reader.ReadRune()
 			break
 		}
+
+		reader.UnreadRune()
 
 		key, err := parseString(reader)
 		if err != nil {
@@ -123,6 +123,7 @@ func parseList(reader *bufio.Reader) ([]interface{}, error) {
 		if r == 'e' {
 			break
 		}
+		reader.UnreadRune()
 
 		val, err := parse(reader)
 		if err != nil {
