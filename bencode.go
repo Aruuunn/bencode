@@ -91,12 +91,12 @@ func parseString(reader *bufio.Reader) (string, error) {
 
 	str = ""
 	for i := uint64(0); i < len; i++ {
-		r, _, err := reader.ReadRune()
+		b, err := reader.ReadByte()
 		if err != nil {
 			return "", err
 		}
 
-		str += string(r)
+		str += string(b)
 	}
 
 	return str, nil
