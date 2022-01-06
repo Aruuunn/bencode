@@ -1,3 +1,4 @@
+// Package bencode provides utilities to read bencoded data in golang
 package bencode
 
 import (
@@ -228,10 +229,12 @@ func parse(reader *bufio.Reader) (interface{}, error) {
 	}
 }
 
+// Parse accepts an io.Reader and parses the bencoded data to return their golang equivalents
 func Parse(reader io.Reader) (interface{}, error) {
 	return parse(bufio.NewReader(reader))
 }
 
+// ParseString same as Parse but accepts a string to parse
 func ParseString(str string) (interface{}, error) {
 	return Parse(strings.NewReader(str))
 }
