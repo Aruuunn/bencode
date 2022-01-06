@@ -29,7 +29,7 @@ lint: ## golangci-lint
 .PHONY: test
 test: 
 	$(call print-target)
-	go test ./...
+	go test -v ./...
 
 .PHONY: mod-tidy
 mod-tidy: ## go mod tidy
