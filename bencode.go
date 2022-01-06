@@ -149,6 +149,9 @@ func parseInt(reader *bufio.Reader) (int64, error) {
 	}
 
 	r, _, err = reader.ReadRune()
+	if err != nil {
+		return 0, err
+	}
 
 	if r != '-' {
 		reader.UnreadRune()
