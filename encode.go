@@ -4,7 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sort"
 )
+
+func sortedKeys(mp map[string]interface{}) (keys []string) {
+	keys = make([]string, 0)
+	for key, _ := range mp {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
+}
 
 func encodeInt(i int64) []byte {
 	return []byte(fmt.Sprintf("i%ve", i))
@@ -16,7 +26,9 @@ func encodeString(str string) []byte {
 
 func encodeDictionary(dict map[string]interface{}) ([]byte, error) {
 	encodedDict := []byte("d")
-	for key, val := range dict {
+	for _, key := range sortedKeys(dict) {
+		val := dict[key]
+
 		encodedDict = append(encodedDict, encodeString(key)...)
 		encodedVal, err := Encode(val)
 		if err != nil {
