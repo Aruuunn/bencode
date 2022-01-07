@@ -84,5 +84,9 @@ func Test_Bencode(t *testing.T) {
 		assert.ErrorIs(t, err, io.EOF)
 		_, err = bencode.Parse(strings.NewReader("di36e4:rosee"))
 		assert.NotNil(t, err)
+		_, err = bencode.ParseString("d3:bbb2:ru3:aaa4:rosee")
+		assert.NotNil(t, err)
+		_, err = bencode.ParseString("d3:aaa4:rose3:bbb2:rue")
+		assert.Nil(t, err)
 	})
 }
