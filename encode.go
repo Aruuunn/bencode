@@ -50,8 +50,10 @@ func Encode(data interface{}) ([]byte, error) {
 	v := reflect.ValueOf(data)
 
 	switch v.Kind() {
-	case reflect.Int, reflect.Uint, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uint8:
+	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int8:
 		return encodeInt(v.Int()), nil
+	case reflect.Uint, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uint8:
+		return encodeInt(int64(v.Uint())), nil
 	case reflect.String:
 		return encodeString(v.String()), nil
 	case reflect.Slice:
