@@ -38,3 +38,17 @@ func main() {
 }
 
 ```
+
+## Invalid Data?
+To be able to encode a given data into bencode, it's data type has to be one of the below.
+
+| Type | Description|
+| :--  | :--- |
+| `int`| Can be any one of the `int` and `uint` variants.|
+| `string` | UTF-8 encoded strings.|
+| `[]interface{}`| The slice can hold any one of the valid data type.|
+| `map[string]interface{}` | The key has to be a string and the value can be any one of the valid data type.
+
+
+## License
+The project is licensed under the [MIT](https://github.com/ArunMurugan78/bencode/blob/master/LICENSE) license.
