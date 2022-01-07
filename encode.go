@@ -46,6 +46,7 @@ func encodeList(list []interface{}) ([]byte, error) {
 	return encodedList, nil
 }
 
+// Encode encodes the provided data into bencoded bytes if valid
 func Encode(data interface{}) ([]byte, error) {
 	v := reflect.ValueOf(data)
 
