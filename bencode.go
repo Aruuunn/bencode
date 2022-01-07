@@ -24,6 +24,16 @@ func isInt(s string) bool {
 	return true
 }
 
+func isLexicographicOrder(arr []string) bool {
+	for i := 1; i < len(arr); i++ {
+		if arr[i] < arr[i-1] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func parseDictionary(reader *bufio.Reader) (map[string]interface{}, error) {
 	parsedDict := make(map[string]interface{})
 
@@ -35,6 +45,8 @@ func parseDictionary(reader *bufio.Reader) (map[string]interface{}, error) {
 	if r != 'd' {
 		return nil, errors.New("'d' expected")
 	}
+
+	keys := make([]string, 0)
 
 	for {
 		r, _, err := reader.ReadRune()
@@ -53,12 +65,18 @@ func parseDictionary(reader *bufio.Reader) (map[string]interface{}, error) {
 			return nil, err
 		}
 
+		keys = append(keys, key)
+
 		val, err := parse(reader)
 		if err != nil {
 			return nil, err
 		}
 
 		parsedDict[key] = val
+	}
+
+	if !isLexicographicOrder(keys) {
+		return nil, errors.New("keys of the dictionary must be in lexicographic order")
 	}
 
 	return parsedDict, nil
