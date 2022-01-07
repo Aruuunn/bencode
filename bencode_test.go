@@ -1,92 +1,55 @@
 package bencode_test
 
 import (
-	"io"
-	"strings"
 	"testing"
 
 	"github.com/ArunMurugan78/bencode"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Bencode(t *testing.T) {
-	t.Run("string parsing", func(t *testing.T) {
-		val, err := bencode.ParseString("4:arun")
+func TestEncode(t *testing.T) {
+	t.Run("encode string", func(t *testing.T) {
+		val, err := bencode.Encode("rose")
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, "arun")
-		val, err = bencode.ParseString("0:")
+		assert.EqualValues(t, val, "4:rose")
+		val, err = bencode.Encode("")
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, "")
-		val, err = bencode.Parse(strings.NewReader("6:rosebphaha"))
+		assert.EqualValues(t, "0:", val)
+	})
+
+	t.Run("encode int", func(t *testing.T) {
+		val, err := bencode.Encode(uint(78))
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, "rosebp")
-		_, err = bencode.Parse(strings.NewReader("-0:sjldflsd"))
+		assert.EqualValues(t, val, "i78e")
+		val, err = bencode.Encode(0)
+		assert.Nil(t, err)
+		assert.EqualValues(t, "i0e", val)
+		val, err = bencode.Encode(-78)
+		assert.Nil(t, err)
+		assert.EqualValues(t, "i-78e", val)
+		_, err = bencode.Encode(78.9)
 		assert.NotNil(t, err)
 	})
 
-	t.Run("list parsing", func(t *testing.T) {
-		val, err := bencode.ParseString("l4:arun3:abii356ed4:name4:arunee")
+	t.Run("encode dict", func(t *testing.T) {
+		val, err := bencode.Encode(map[string]interface{}{"name": []string{"one"}})
 		assert.Nil(t, err)
-		list, ok := val.([]interface{})
-		assert.EqualValues(t, ok, true)
-		assert.EqualValues(t, list[0], "arun")
-		assert.EqualValues(t, list[1], "abi")
-		assert.EqualValues(t, list[2], 356)
-		mp, ok := list[3].(map[string]interface{})
-		assert.EqualValues(t, ok, true)
-		assert.EqualValues(t, mp["name"], "arun")
-		_, err = bencode.Parse(strings.NewReader("l4:rose3:onei6969e"))
-		assert.NotNil(t, err)
+		assert.EqualValues(t, val, "d4:namel3:oneee")
+
+		val, err = bencode.Encode(map[string]interface{}{"names": []string{"rose", "arun"}, "num": 20, "sub": map[string]interface{}{"subfield": []string{"one", "two"}}})
+		assert.Nil(t, err)
+		assert.EqualValues(t, val, "d5:namesl4:rose4:arune3:numi20e3:subd8:subfieldl3:one3:twoeee")
 	})
 
-	t.Run("integer parsing", func(t *testing.T) {
-		val, err := bencode.Parse(strings.NewReader("i69e"))
+	t.Run("encode lists", func(t *testing.T) {
+		val, err := bencode.Encode([]string{"one", "four", "fivee"})
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, 69)
-		val, err = bencode.Parse(strings.NewReader("i0e"))
+		assert.EqualValues(t, val, "l3:one4:four5:fiveee")
+		val, err = bencode.Encode([]interface{}{"rose", map[string]interface{}{"one": "two"}})
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, 0)
-		_, err = bencode.ParseString("i-0e")
-		assert.NotNil(t, err)
-		_, err = bencode.ParseString("i083673e")
-		assert.NotNil(t, err)
-		val, err = bencode.ParseString("i-6969e")
+		assert.EqualValues(t, val, "l4:rosed3:one3:twoee")
+		val, err = bencode.Encode([]interface{}{})
 		assert.Nil(t, err)
-		assert.EqualValues(t, val, -6969)
-		_, err = bencode.ParseString("i6347387")
-		assert.NotNil(t, err)
-		assert.ErrorIs(t, err, io.EOF)
-		_, err = bencode.ParseString("i78.33e")
-		assert.NotNil(t, err)
-		_, err = bencode.ParseString("ie")
-		assert.NotNil(t, err)
-	})
-
-	t.Run("test dictionary", func(t *testing.T) {
-		val, err := bencode.ParseString("d4:name4:rosee")
-		mp, ok := val.(map[string]interface{})
-		assert.EqualValues(t, ok, true)
-		assert.Nil(t, err)
-		assert.EqualValues(t, mp["name"], "rose")
-		val, err = bencode.ParseString("d4:listl4:rose3:onei78eee")
-		mp, ok = val.(map[string]interface{})
-		assert.EqualValues(t, ok, true)
-		assert.Nil(t, err)
-		list, ok := mp["list"].([]interface{})
-		assert.EqualValues(t, ok, true)
-		assert.EqualValues(t, list[0], "rose")
-		assert.EqualValues(t, list[1], "one")
-		assert.EqualValues(t, list[2], 78)
-		_, err = bencode.Parse(strings.NewReader("d4:namee"))
-		assert.NotNil(t, err)
-		_, err = bencode.Parse(strings.NewReader("d4:name4:rose"))
-		assert.NotNil(t, err)
-		assert.ErrorIs(t, err, io.EOF)
-		_, err = bencode.Parse(strings.NewReader("di36e4:rosee"))
-		assert.NotNil(t, err)
-		_, err = bencode.ParseString("d3:bbb2:ru3:aaa4:rosee")
-		assert.NotNil(t, err)
-		_, err = bencode.ParseString("d3:aaa4:rose3:bbb2:rue")
-		assert.Nil(t, err)
+		assert.EqualValues(t, val, "le")
 	})
 }
