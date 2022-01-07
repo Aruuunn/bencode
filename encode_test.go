@@ -18,7 +18,7 @@ func TestEncode(t *testing.T) {
 	})
 
 	t.Run("encode int", func(t *testing.T) {
-		val, err := bencode.Encode(78)
+		val, err := bencode.Encode(uint(78))
 		assert.Nil(t, err)
 		assert.EqualValues(t, val, "i78e")
 		val, err = bencode.Encode(0)
