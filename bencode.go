@@ -1,3 +1,4 @@
+// Package bencode is a golang package for bencoding and bdecoding data from and from to equivalents.
 package bencode
 
 import (
